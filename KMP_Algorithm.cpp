@@ -4,22 +4,6 @@
 
 using namespace std;
 
-//Simple match algorithm, not used
-bool has_substring(string& input_string, string& pattern){
-    int j=0;
-    int i=0;
-    int k = 0;
-    while(j<input_string.length() && i<pattern.length()){
-        if(input_string[j]== pattern[i]){
-        i++;
-        j++;
-        }else{i=0; k++ ; j=i;}}
-    if(i=pattern.length()){
-        return true;
-    }
-    return false;
-}
-
 //Function to compute temporary integer array for prefix/suffix matches
 vector<int> temp_array(string& pattern){
     vector<int> tmp(pattern.length());

@@ -1,4 +1,3 @@
-// Overloading operators for Array class
 #include<iostream>
 #include<cstdlib>
 
@@ -27,12 +26,22 @@ public:
 
 // Implementation of [] operator.  This function must return a
 // reference as array element can be put on left side
-int &Array::operator[](std::size_t index){   
+int &Array::operator[](std::size_t index){
+    puts("overload");   
     if (index >= size || index < 0){
        throw std::out_of_range("Index out of Range error");
     }
     return ptr[index];
 }
+
+int const& Array::operator[](std::size_t index) const{
+    puts("const overload");
+    if (index >= size || index < 0){
+        throw std::out_of_range("Index out of Range error");
+    }
+    return ptr[index];
+}
+
     
 // constructor for array class
 Array::Array(int *p, std::size_t s){
@@ -84,6 +93,7 @@ int main()
 {
     int a[] = {1, 2, 3, 4, 5, 6};
     Array arr1(a, 6);
+    std::cout << arr1[3] << '\n';
     arr1[4] = 7;
     arr1.print();
     Array arr2 = arr1;

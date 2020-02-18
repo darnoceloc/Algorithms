@@ -40,8 +40,9 @@ Array::Array(int *p, std::size_t s){
     ptr = nullptr;
     if (s != 0){
         ptr = new int[s];
-        for (int i = 0; i < s; i++)
+        for (int i = 0; i < s; i++){
             ptr[i] = p[i];}
+    }
 }
 
 // destructor for array class
@@ -53,9 +54,9 @@ Array::~Array(){
 Array::Array(const Array& A) { 
     size = A.size;
     ptr  = new int[size];
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++){
         ptr[i] = A.ptr[i];}
-
+}
 //swap friend function of assignment operator
 void swap(Array& first, Array& second){
     using std::swap;
@@ -70,16 +71,20 @@ Array& Array::operator=(Array other){
 //print function for array elements
 void Array::print() const{
     std::cout << "{";
-    for(int i = 0; i < size; i++)
-        std::cout<<ptr[i]<<" ";
-    std::cout<<"}"<<std::endl;}
+    for(int i = 0; i < size; i++){
+        std::cout << ptr[i];
+        if (i == size-1){
+            continue;}
+        std::cout<<" ";       
+       }
+    std::cout<<"}"<< std::endl;}
 
 // Driver program to test above methods
 int main()
 {
     int a[] = {1, 2, 3, 4, 5, 6};
     Array arr1(a, 6);
-    arr1[0] = 7;
+    arr1[4] = 7;
     arr1.print();
     Array arr2 = arr1;
     arr2.print();

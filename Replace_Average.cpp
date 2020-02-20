@@ -40,7 +40,7 @@ class replace_avg{
 
     void printData(const std::vector<double> &inputData)
     {
-        for (auto &i: inputData)
+        for (const auto &i: inputData)
         {
             std::cout << i << " ";
         }

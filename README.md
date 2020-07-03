@@ -1,2 +1,2 @@
 # Algorithms
-Algorithms, containers and other interesting exercises.
+Algorithms, STL containers and other interesting exercises.

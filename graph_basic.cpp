@@ -12,7 +12,6 @@ class Graph
     private:
     map<int, map<int, int>> graph;
     vector<int> numEdge;
-    int vert = 0;
     public:
     void insertEdge(int from, int to, int weight){
         graph[from][to] = weight;

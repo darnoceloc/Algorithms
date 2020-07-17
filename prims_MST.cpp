@@ -34,30 +34,10 @@ struct compare {
     }
 }comp;
 
-class Graph {
-    private:
-        int theGraph[MAXNUMVERTICES][MAXNUMVERTICES] = {{0}};
-        set<int> vertices = {0};      
-
+class Graph {     
     public:
-        void insertEdge(int from, int to, int weight);
-        void insertVertex(int x);
         void primMST(nestInts mstGraph);
 };
-
-void Graph::insertEdge(int to, int from, int weight) {
-     if (weight = 0){
-         return;
-     }
-	 this->theGraph[to][from] = weight;
-     this->theGraph[from][to] = weight;
-     return;
-}
-
-void Graph::insertVertex(int x) {
-    this->vertices.insert(x);
-    return;
-}
 
 void Graph::primMST(nestInts mstGraph) {
     vector<edge> spanningTree;
@@ -94,11 +74,11 @@ void Graph::primMST(nestInts mstGraph) {
         if(spanningTree.front().src == it4->des && spanningTree.front().des == it7->src){
             spanningTree.erase(spanningTree.begin());  
         }
-        if(spanningTree.front().src == it5->src || spanningTree.front().src == it4->des){
+        else if(spanningTree.front().src == it5->src || spanningTree.front().src == it4->des){
             finalTree.push_back(edge(spanningTree.front().src, spanningTree.front().des, spanningTree.front().weight));
             spanningTree.erase(spanningTree.begin());      
         }
-        if(spanningTree.front().des == it7->src || spanningTree.front().des == it6->des){
+        else if(spanningTree.front().des == it7->src || spanningTree.front().des == it6->des){
             finalTree.push_back(edge(spanningTree.front().des, spanningTree.front().src, spanningTree.front().weight));
             spanningTree.erase(spanningTree.begin());             
         }
@@ -122,9 +102,6 @@ int main() {
         if(wt == 0){
             continue;
         }
-        myGraph->insertEdge(inVert, outVert, wt);
-        myGraph->insertVertex(inVert);
-        myGraph->insertVertex(outVert);
         graph[inVert][outVert] = wt;
         graph[outVert][inVert] = wt;
     }

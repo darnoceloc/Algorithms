@@ -50,8 +50,7 @@ void Graph::printGraph(){
     }
     return;
 } 
-// A utility function to print the  
-// constructed MST stored in parent[]  
+  
 void Graph::printMST()  {  
     cout << "Edge \tWeight\n";  
     for (auto itr = ++numEdge.begin(); itr != numEdge.end(); itr++){
@@ -59,41 +58,24 @@ void Graph::printMST()  {
     }
     return;  
 }   
-// Function to construct and print MST for  
-// a graph represented using adjacency  
-// matrix representation  
+ 
 void Graph::primMST() {   
-    // Initialize all keys as INFINITE  
     for (int i = 1; i <= numEdge.size(); i++){  
         this->key[i] = INT_MAX;
         this->mstSet[i] = false; 
     } 
-    // Always include first 1st vertex in MST.  
-    // Make key 0 so that this vertex is picked as first vertex.  
     key[1] = 0;
-    parent[1] = -1; // First node is always root of MST  
-    // // The MST will have V vertices  
-    for (int count = 1; count <= this->numEdge.size(); count++) {  
-        // Pick the minimum key vertex from the  
-        // set of vertices not yet included in MST  
+    parent[1] = -1; 
+    for (int count = 1; count <= this->numEdge.size(); count++) {   
         int u = this->minKey(); 
-        // Add the picked vertex to the MST Set  
-        this->mstSet[u] = true;  
-        // Update key value and parent index of  
-        // the adjacent vertices of the picked vertex.  
-        // Consider only those vertices which are not  
-        // yet included in MST  
+        this->mstSet[u] = true;   
         for (int v = 1; v <= this->numEdge.size(); v++){  
-            // graph[u][v] is non zero only for adjacent vertices of m  
-            // mstSet[v] is false for vertices not yet included in MST  
-            // Update the key only if graph[u][v] is smaller than key[v]  
             if (theGraph[u][v] && mstSet[v] == false && theGraph[u][v] < key[v]) { 
                 parent[v] = u;
                 key[v] = theGraph[u][v];
             }  
         }
     }  
-    // // print the constructed MST  
     printMST();
     return;  
 }   

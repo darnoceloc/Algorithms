@@ -53,7 +53,6 @@ class Net(nn.Module):
         out = self.fc2(out)
         return out
 
-# https://stackoverflow.com/questions/55588201/pytorch-transforms-on-tensordataset
 class TensorDataset(Dataset):
     """TensorDataset with support of transforms.
     """

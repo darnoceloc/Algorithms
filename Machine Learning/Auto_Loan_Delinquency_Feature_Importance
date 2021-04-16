@@ -3,7 +3,7 @@
 File:   Auto_Loan_ML.py
 Author: Conrad Cole
 Date:   3/15/20
-Desc:   Analysis of GM Financial Consumer Automobile Receivables Trust 2019-4 Data Tape
+Desc:   Analysis of GM Financial Consumer Automobile Receivables Trust Data Tape
 	Prediction of Delinquency via Tree-Based Feature Importance Methods
 """
 

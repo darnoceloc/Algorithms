@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- #
+# -*- coding: utf-8 -*-
 """
 File:   Auto_Loan_ML.py
 Author: Conrad Cole
@@ -106,16 +106,6 @@ def clean_time_series(df, timez):
     return df
 
 
-def mad_based_outlier(points, thresh=3.5):
-    if len(points.shape) == 1:
-        points = points[:, None]
-    median = np.median(points, axis=0)
-    diff = np.sum((points - median)**2, axis=-1)
-    diff = np.sqrt(diff)
-    med_abs_deviation = np.median(diff)
-    modified_z_score = 0.6745 * diff / med_abs_deviation
-    return modified_z_score > thresh
-
 
 """ ======================  Class definitions ========================== """
 
@@ -139,9 +129,12 @@ class RandomForestExample:
     def predictLabels(self, model, featurez):
         model = model.predict(featurez)
         return model
+	
+	
+"""======================================================================================="""
 
 
-path_dfs = 'Auto_Loans_Fixed/2021.03.22_GM Financial Consumer Automobile '
+path_dfs = '/home/darnoc/Documents/Machine Learning/Auto_Loans_Fixed/2021.03.22_GM Financial Consumer Automobile '
 
 rfe = RandomForestExample(path=path_dfs)
 
@@ -230,21 +223,6 @@ sns.histplot(data=df_train_norm_wocats, x='subvented', y='obligorCreditScore', s
 plt.show()
 sns.histplot(data=df_train_norm_wocats['currentDelinquencyStatus'], stat="probability", discrete=True)
 plt.show()
-sns.histplot(data=df_train_norm_wocats, x='subvented', y='currentDelinquencyStatus',
-             stat="probability")
-plt.show()
-# sns.histplot(data=df_train_norm_wocats, x='actualPrincipalCollectedAmount', y='currentDelinquencyStatus',
-#              stat="probability", color="green", discrete=True)
-# plt.show()
-# sns.histplot(data=df_train_norm_wocats, x='totalActualAmountPaid', y='currentDelinquencyStatus',
-#              stat="probability", color="green", discrete=True)
-# plt.show()
-# sns.histplot(data=df_train_norm_wocats, x='paymentToIncomePercentage', y='currentDelinquencyStatus',
-#              stat="probability")
-# plt.show()
-# sns.histplot(data=df_train_norm_wocats, x='obligorCreditScore', y='currentDelinquencyStatus', stat="probability")
-# plt.show()
-
 
 listOfElems = ['1; 2', '-', 'false']
 dictOfPos = {elem: getIndexes(df_train_norm, elem) for elem in listOfElems}

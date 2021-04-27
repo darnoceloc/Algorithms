@@ -221,12 +221,6 @@ plt.show()
 
 sns.histplot(data=df_train_norm_wocats, x='obligorCreditScore', stat="probability")
 plt.show()
-sns.histplot(data=df_train_norm_wocats, x='subvented', stat="probability")
-plt.show()
-sns.histplot(data=df_train_norm_wocats, x='subvented', y='obligorCreditScore', stat="probability")
-plt.show()
-sns.histplot(data=df_train_norm_wocats['currentDelinquencyStatus'], stat="probability", discrete=True)
-plt.show()
 
 listOfElems = ['1; 2', '-', 'false']
 dictOfPos = {elem: getIndexes(df_train_norm, elem) for elem in listOfElems}
@@ -253,34 +247,6 @@ sns.boxplot(x="currentDelinquencyStatus", y="vehicleValueAmount", data=df_train_
 plt.show()
 sns.boxplot(x="currentDelinquencyStatus", y="originalInterestRatePercentage", data=df_train_norm_wocats)
 plt.show()
-
-sns.histplot(data=labels_wocats)
-plt.show()
-sns.histplot(data=df_train_norm_wocats['currentDelinquencyStatus'])
-plt.show()
-sns.histplot(data=df_train_norm_wocats, x='subvented', stat='probability')
-plt.show()
-sns.histplot(data=df_train_norm_wocats, x='currentDelinquencyStatus', y='actualPrincipalCollectedAmount',
-             stat="probability", color="red", discrete=True)
-plt.show()
-sns.histplot(data=df_train_norm_wocats, x='currentDelinquencyStatus', y='totalActualAmountPaid',
-             stat="probability", color="red", discrete=True)
-plt.show()
-sns.histplot(data=df_train_norm_wocats, x='currentDelinquencyStatus', y='paymentToIncomePercentage',
-             stat="probability")
-plt.show()
-sns.histplot(data=df_train_norm_wocats, x='currentDelinquencyStatus', y='obligorCreditScore',
-             stat="probability")
-plt.show()
-
-# plt.scatter(df_train_norm_wocats['subvented'], df_train_norm_wocats['currentDelinquencyStatus'],
-#               marker='o', label='subvented')
-# plt.ylabel("currentDelinquencyStatus", labelpad=15)
-# plt.xlabel("subvented", labelpad=15)
-# plt.title("Delinquence Prediction of Auto Loans", y=1.02, fontsize=22)
-# plt.xticks(fontsize=10)
-# plt.legend()
-# plt.show()
 
 df_train_norm = df_train_norm.drop(columns='currentDelinquencyStatus')
 df_train_norm_wocats = df_train_norm_wocats.drop(columns='currentDelinquencyStatus')

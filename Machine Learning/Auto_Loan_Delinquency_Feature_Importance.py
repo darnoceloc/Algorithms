@@ -26,8 +26,6 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.inspection import permutation_importance
 from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
 

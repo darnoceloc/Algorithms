@@ -1,0 +1,275 @@
+import matplotlib.pyplot as plt
+import matplotlib.dates as dates
+import pandas as pd
+import numpy as np
+from sklearn import decomposition
+import datetime as dt
+import os
+
+os.chdir("/home/darnoc/Documents/Personal/Personal Finance/Interest_Rate_Models/")
+cwd = os.getcwd()
+# import calendar and obtain a vector "days" that counts the day to each cashflow.
+Calendar = pd.read_excel(cwd+'/SwissGovYields.xls', header=2, usecols="A:I", nrows=120, keep_default_na=False, parse_dates=True)
+Calendar[Calendar.select_dtypes(include=['number']).columns] *= 0.01
+Calendar.rename(columns={'Unnamed: 0': 'dates'}, inplace=True)
+Calendar = Calendar.dropna()
+print(Calendar)
+print(Calendar.iloc[0:120, 1:2].values.astype(float))
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(Calendar["dates"], 100*Calendar['2 years'], c='b', marker='o', label='2 years')
+ax.plot(Calendar["dates"], 100*Calendar['3 years'], c='r', lw=1,  marker='*',  markersize=5, label='3 years')
+ax.plot(Calendar["dates"], 100*Calendar['4 years'], c='g', lw=1,  marker='^', markersize=5, label='4 years')
+ax.plot(Calendar["dates"], 100*Calendar['5 years'], c='m', lw=1,  marker='D', markersize=7, label='5 years')
+ax.plot(Calendar["dates"], 100*Calendar['7 years'], c='k', lw=1,  marker='o', markersize=5, label='7 years')
+ax.plot(Calendar["dates"], 100*Calendar['10 years'], c='C1', lw=1,  marker='s', markersize=5, label='10 years')
+ax.plot(Calendar["dates"], 100*Calendar['20 years'], c='c', lw=1,  marker='p', markersize=5, label='20 years')
+ax.plot(Calendar["dates"], 100*Calendar['30 years'], c='y', lw=1,  marker='+', markersize=5, label='30 years')
+plt.title("Swiss Gov. Yield Curves", y=1.02, fontsize=22)
+plt.xlabel("Real Time")
+plt.ylabel("Yield (%)")
+ax.legend(loc=0)
+plt.show()
+
+months = Calendar['dates'][1:].dropna()
+Calendar_diff = Calendar.diff().dropna()
+X = Calendar_diff.T
+
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(months, 100*X.iloc[1:2].T, c='b', marker='o', label='2 years')
+ax.plot(months, 100*X.iloc[2:3].T, c='r', lw=1,  marker='*',  markersize=5, label='3 years')
+ax.plot(months, 100*X.iloc[3:4].T, c='g', lw=1,  marker='^', markersize=5, label='4 years')
+ax.plot(months, 100*X.iloc[4:5].T, c='m', lw=1,  marker='D', markersize=7, label='5 years')
+ax.plot(months, 100*X.iloc[5:6].T, c='k', lw=1,  marker='o', markersize=5, label='7 years')
+ax.plot(months, 100*X.iloc[6:7].T, c='C1', lw=1,  marker='s', markersize=5, label='10 years')
+ax.plot(months, 100*X.iloc[7:8].T, c='c', lw=1,  marker='p', markersize=5, label='20 years')
+ax.plot(months, 100*X.iloc[8:9].T, c='y', lw=1,  marker='+', markersize=5, label='30 years')
+plt.title("Monthly Changes in Yield Curve (Stationary)", y=1.02, fontsize=22)
+plt.xlabel("Real Time Duration")
+plt.ylabel("Loading")
+ax.legend(loc=0)
+plt.show()
+
+mus = np.zeros([X.shape[0] - 1, 1])
+stdev = np.zeros([X.shape[0] - 1, 1])
+
+for i in range(1, X.shape[0]):
+    mus[i-1] = np.mean(X.iloc[i:i+1, :].values)
+    stdev[i-1] = np.std(X.iloc[i:i+1, :].values)
+print(mus)
+print(stdev)
+
+X_cent = np.zeros([X.shape[0]-1, X.shape[1]])
+
+for k in range(1, X.shape[0]):
+    X_cent[k-1, :] = X.iloc[k:k+1, :].values - mus[k-1]
+print(X_cent.shape)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(months, 100*X_cent[0].T, c='b', marker='o', label='2 years')
+ax.plot(months, 100*X_cent[1].T, c='r', lw=1,  marker='*',  markersize=5, label='3 years')
+ax.plot(months, 100*X_cent[2].T, c='g', lw=1,  marker='^', markersize=5, label='4 years')
+ax.plot(months, 100*X_cent[3].T, c='m', lw=1,  marker='D', markersize=7, label='5 years')
+ax.plot(months, 100*X_cent[4].T, c='k', lw=1,  marker='o', markersize=5, label='7 years')
+ax.plot(months, 100*X_cent[5].T, c='C1', lw=1,  marker='s', markersize=5, label='10 years')
+ax.plot(months, 100*X_cent[6].T, c='c', lw=1,  marker='p', markersize=5, label='20 years')
+ax.plot(months, 100*X_cent[7].T, c='y', lw=1,  marker='+', markersize=5, label='30 years')
+plt.title("Monthly Changes in Yield Curve (Mean Centered)", y=1.02, fontsize=22)
+plt.xlabel("Real Time")
+plt.ylabel("Loading")
+ax.legend(loc=0)
+plt.show()
+
+empir_cov = np.zeros([X.shape[0]-1, X.shape[0]-1])
+empir_cov = (X_cent@X_cent.T)/X.shape[1]
+Lemp, Aemp = np.linalg.eig(empir_cov)
+print("eigenvectors", Aemp)
+print("eigenvalues", Lemp)
+fract = Lemp/np.sum(Lemp)
+print(fract[0]+fract[1])
+
+Q = np.cov(X_cent, bias=True)
+L, A = np.linalg.eig(Q)
+print("numpy eigenvectors", A)
+print("numpy eigenvalues", L)
+fract = L/np.sum(L)
+print(fract[0]+fract[1])
+Y = A.T@X_cent
+for h in range(8):
+    for x in range(8):
+        if x == h:
+            print("npcoveigs", np.dot(Y[h], Y[x])/119)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(Calendar.columns[1:], A[:, 0].T, c='b', marker='o', label='Level PC1')
+ax.plot(Calendar.columns[1:], A[:, 1].T, c='r', lw=1,  marker='*',  markersize=10, label='Slope PC2')
+ax.plot(Calendar.columns[1:], A[:, 2].T, c='g', lw=1,  marker='^', markersize=10, label='Curvature PC3')
+plt.title("Yield Curve Loadings", y=1.02, fontsize=22)
+plt.xlabel("Time to Maturity/Original Features")
+plt.ylabel("Loading")
+ax.legend(loc=0)
+plt.show()
+
+pcs = ['PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8']
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(pcs, Y[:, 0].T, c='b', marker='o',  markersize=10, label='2 Years')
+ax.plot(pcs, Y[:, 1].T, c='r', lw=1,  marker='*',  markersize=10, label='3 Years')
+ax.plot(pcs, Y[:, 2].T, c='g', lw=1,  marker='^', markersize=10, label='4 Years')
+ax.plot(pcs, Y[:, 3].T, c='m', lw=1,  marker='+', markersize=10, label='5 Years')
+ax.plot(pcs, Y[:, 4].T, c='c', lw=1,  marker='o', markersize=10, label='7 Years')
+ax.plot(pcs, Y[:, 5].T, c='C1', lw=1,  marker='s', markersize=10, label='10 Years')
+ax.plot(pcs, Y[:, 6].T, c='k', lw=1,  marker='p', markersize=10, label='20 Years')
+ax.plot(pcs, Y[:, 7].T, c='y', lw=1,  marker='+', markersize=10, label='30 Years')
+plt.title("Weighting of each Feature across PCs", y=1.02, fontsize=22)
+plt.xlabel("Principal Components")
+plt.ylabel("Yield (%)")
+ax.legend(loc=0)
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(months, Y[0], c='b', marker='o',  markersize=10, label='PC1')
+ax.plot(months, Y[1], c='r', lw=1,  marker='*',  markersize=5, label='PC2')
+ax.plot(months, Y[2], c='g', lw=1,  marker='^', markersize=5, label='PC3')
+ax.plot(months, Y[3], c='m', lw=1,  marker='D', markersize=5, label='PC4')
+ax.plot(months, Y[4], c='k', lw=1,  marker='>', markersize=5, label='PC5')
+ax.plot(months, Y[5], c='C1', lw=1,  marker='s', markersize=5, label='PC6')
+ax.plot(months, Y[6], c='c', lw=1,  marker='p', markersize=5, label='PC7')
+ax.plot(months, Y[7], c='y', lw=1,  marker='d', markersize=5, label='PC8')
+plt.title("Empirical PCA Projections", y=1.02, fontsize=22)
+plt.xlabel("Real Time Portfolio Duration")
+plt.ylabel("Monthly Yield Changes")
+ax.legend(loc=0)
+plt.show()
+
+Xsmp = A[:, 0:2]@Y[0:2, :]
+print(Xsmp.shape)
+print(Xsmp[:, 0:2])
+x_pca = np.zeros([8, 119])
+for k in range(8):
+    x_pca[k, :] = Xsmp[k] + mus[k]
+print("sample pca shape", x_pca.shape)
+print("sample pc1 shape", x_pca[:, 0].shape)
+print(x_pca[0:1])
+print(x_pca[1:2])
+
+corr = A.T*np.sqrt(L)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(Calendar.columns[1:], corr[:, 0], c='b', marker='o', label='PC1')
+ax.plot(Calendar.columns[1:], corr[:, 1], c='r', lw=1,  marker='*',  markersize=10, label='PC2')
+ax.plot(Calendar.columns[1:], corr[:, 2], c='g', lw=1,  marker='^', markersize=10, label='PC3')
+plt.title("Correlation between PCs and Original Variables", y=1.02, fontsize=22)
+plt.xlabel("Time to Maturity/Original Features")
+plt.ylabel("Loading")
+ax.legend(loc=0)
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(pcs, corr[0], c='b', marker='o', markersize=10, label='2 Years')
+ax.plot(pcs, corr[1], c='r', lw=1,  marker='*',  markersize=10, label='3 Years')
+ax.plot(pcs, corr[2], c='g', lw=1,  marker='^', markersize=10, label='4 Years')
+ax.plot(pcs, corr[3], c='m', lw=1,  marker='D', markersize=5, label='5 Years')
+ax.plot(pcs, corr[4], c='k', lw=1,  marker='>', markersize=5, label='7 Years')
+ax.plot(pcs, corr[5], c='C1', lw=1,  marker='s', markersize=5, label='10 Years')
+ax.plot(pcs, corr[6], c='c', lw=1,  marker='p', markersize=5, label='20 Years')
+ax.plot(pcs, corr[7], c='y', lw=1,  marker='d', markersize=5, label='30 Years')
+plt.title("Correlation between PCs and Original Variables", y=1.02, fontsize=22)
+plt.xlabel("Time to Maturity")
+plt.ylabel("Principal Components")
+ax.legend(loc=0)
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(months, Xsmp[0], c='b', marker='o',  markersize=10, label='PC1')
+ax.plot(months, Xsmp[1], c='r', lw=1,  marker='*',  markersize=5, label='PC2')
+plt.title("Empirical Projections on PC1 and 2", y=1.02, fontsize=22)
+plt.xlabel("Real Time")
+plt.ylabel("Monthly Yield Changes")
+ax.legend(loc=0)
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_axisbelow(True)
+ax.yaxis.grid(color='gray', linestyle='dashed')
+ax.plot(Calendar.columns[1:], x_pca[:, 0], c='b', marker='o',  markersize=10, label='PC1')
+ax.plot(Calendar.columns[1:], x_pca[:, 1], c='r', lw=1,  marker='*',  markersize=5, label='PC2')
+ax.plot(Calendar.columns[1:], x_pca[:, 2], c='g', lw=1,  marker='^', markersize=10, label='PC3')
+plt.title("PC Loadings across Original Features", y=1.02, fontsize=22)
+plt.xlabel("Real Time")
+plt.ylabel("Time to Maturity/Original Features")
+ax.legend(loc=0)
+plt.show()
+
+T_i = np.array([2, 3, 4, 5])
+c_i = np.array([80, 70, 150, 40])
+y_i = np.array([0.00407, 0.00522, 0.00685, 0.00863])
+
+sum_ = np.zeros([1, 119])
+k = s = 0
+for s in range(4):
+    sum_ = sum_ + (c_i[s]*y_i[s]*np.exp(-y_i[s]*T_i[s])/12) - T_i[s]*(c_i[s]*np.exp(-y_i[s]*T_i[s]))*(x_pca[s:s+1])
+    print(sum_)
+print("monthly change in portfolio value", sum_)
+print("stdev", np.std(sum_, ddof=1, dtype=np.float64))
+print("stdev", np.std(sum_, ddof=0, dtype=np.float64))
+print("avg", np.mean(sum_))
+
+sumr_ = np.zeros([1, 119])
+k = s = 0
+for s in range(4):
+    sumr_ = sumr_ + (c_i[s]*y_i[s]*np.exp(-y_i[s]*T_i[s])/12) - T_i[s]*(c_i[s]*np.exp(-y_i[s]*T_i[s]))*(X.iloc[s+1:s+2, :].values.astype(float))
+    print(sumr_)
+print("monthly change in portfolio value", sumr_)
+print("stdev", np.std(sumr_, ddof=1, dtype=np.float64))
+print("stdev", np.std(sumr_, ddof=0, dtype=np.float64))
+print("avg", np.mean(sumr_))
+
+plt.plot(months, sum_.T, c='b', marker='o',  markersize=5, label='Change in Value PC')
+plt.plot(months, sumr_.T, c='r', marker='*',  markersize=5, label='Change in Value Actual')
+plt.title("Monthly Change in Portfolio Value", y=1.02, fontsize=22)
+plt.xlabel("Real Time")
+plt.ylabel("Cash Value Difference")
+plt.legend(loc=0)
+plt.show()
+
+k = s = 0
+val_ = np.zeros([1, 119])
+for s in range(4):
+    val_ = val_ + sum_ + c_i[s]*np.exp(-y_i[s]*T_i[s])
+    print(sum_)
+
+plt.plot(months, val_.T, c='r', lw=1,  marker='*',  markersize=5, label='Value')
+plt.title("Monthly Total Portfolio Value", y=1.02, fontsize=22)
+# plt.ylim(330, 335)
+plt.xlabel("Real Time")
+plt.ylabel("Cash Value")
+plt.legend(loc=0)
+plt.show()

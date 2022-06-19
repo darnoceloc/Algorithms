@@ -136,7 +136,7 @@ class RandomForestExample:
 """======================================================================================="""
 
 
-path_dfs = '/home/darnoc/Documents/Machine Learning/Auto_Loans_Fixed/2021.03.22_GM Financial Consumer Automobile '
+path_dfs = ''
 
 rfe = RandomForestExample(path=path_dfs)
 

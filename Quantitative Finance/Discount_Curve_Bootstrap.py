@@ -7,7 +7,7 @@ import datetime as dt
 import os
 from math import isnan
 
-os.chdir("/home/darnoc/Documents/Personal/Personal Finance/Interest_Rate_Models/")
+os.chdir("")
 # import calendar and obtain a vector "days" that counts the day to each cashflow.
 cwd = os.getcwd()
 Calendar = pd.read_excel(cwd+'/Bootstrap_data.xls', header=4, usecols="C:F, G:I, J, L:N")

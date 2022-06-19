@@ -87,7 +87,7 @@ def run(trial, X_train, y_train, X_valid, y_valid):
 """======================================================================================="""
 
 # import raw training data from csv file and view summaries
-data = pd.read_csv('/home/darnoc/Documents/Machine Learning/Corporate_Challenges/historical_data.csv',
+data = pd.read_csv('historical_data.csv',
                    na_values='NA')
 print(data.dtypes)
 print(data.describe())

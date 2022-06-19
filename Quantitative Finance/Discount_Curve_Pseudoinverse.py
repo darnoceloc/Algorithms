@@ -21,7 +21,7 @@ print(P01)
 PV = 15*(P01+P02+P03) + 115*P04
 print(PV)
 
-os.chdir("/home/darnoc/Documents/Personal/Personal Finance/Interest_Rate_Models/")
+os.chdir("")
 cwd = os.getcwd()
 # import calendar and obtain a vector "days" that counts the day to each cashflow.
 Calendar = pd.read_excel(cwd+'/Bootstrap_data.xls', header=4, usecols="C:F, G:I")

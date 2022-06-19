@@ -6,7 +6,7 @@ from sklearn import decomposition
 import datetime as dt
 import os
 
-os.chdir("/home/darnoc/Documents/Personal/Personal Finance/Interest_Rate_Models/")
+os.chdir("")
 cwd = os.getcwd()
 # import calendar and obtain a vector "days" that counts the day to each cashflow.
 Calendar = pd.read_excel(cwd+'/SwissGovYields.xls', header=2, usecols="A:I", nrows=120, keep_default_na=False, parse_dates=True)

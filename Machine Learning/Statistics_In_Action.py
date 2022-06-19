@@ -6,7 +6,7 @@ import seaborn as sns
 import statsmodels.api as sm
 from scipy import stats
 
-data = pd.read_excel("/home/darnoc/Downloads/prices.xlsx")
+data = pd.read_excel("prices.xlsx")
 print(data)
 print(data.describe())
 data['Average Price'] = data['Average Price'].astype(np.float64)
